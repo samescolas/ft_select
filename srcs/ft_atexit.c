@@ -6,12 +6,12 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/16 11:38:18 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/16 12:05:08 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/23 14:24:32 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "init.h"
 #include "../libft/libft.h"
-#include "ft_select.h"
 
 static void	resize_arr(char ***arr, int size, int buff_size)
 {
@@ -58,5 +58,6 @@ void	ft_str_atexit(int loading, char *str_to_free)
 void	ft_atexit(void)
 {
 	ft_str_atexit(0, (void *)0);
+	reset_terminal_settings((void *)0);
 	exit(0);
 }
