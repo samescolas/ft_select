@@ -1,33 +1,33 @@
-NAME = ft_select
-
-HEADERS = $(wildcard includes/*.h$)
-
-SRCS = $(wildcard srcs/*.c$)
-
-OBJS = $(subst srcs/,.objs/,$(SRCS:.c=.o))
-
-LIBFT = libft/libft.a
-
-LIB_DEPS = $(wildcard libft/*.c$)
-
 CC = gcc
-
 CFLAGS = -Wall -Wextra -Werror
 
-LINK = -L libft -lft
+NAME = ft_select
+HEADERS = $(wildcard includes/*.h$)
+SRCS = $(wildcard srcs/*.c$)
+OBJS = $(subst srcs/,.objs/,$(SRCS:.c=.o))
+LIBFT = libft/libft.a
+LIB_DEPS = $(wildcard libft/*.c$)
+
+TO_LINK = ft termcap
+LINK = -L libft $(foreach lib,$(TO_LINK), -l$(lib))
 
 all : $(NAME)
 
 $(NAME) : $(OBJS) $(HEADERS) $(LIBFT)
-	$(CC) .objs/*.o $(LINK) -ltermcap -o $@
+	$(CC) $(CFLAGS) $(LINK) .objs/*.o -o $@
 
-.objs/%.o : srcs/%.c $(HEADERS) $(LIBFT)
-	$(CC) $(CFLAGS) -I includes -c -o $@ $<
+$(OBJS) : $(SRCS) $(HEADERS) $(LIBFT)
+	$(CC) $(CFLAGS) -Iincludes -c $(addprefix srcs/,$(subst .o,.c, $(notdir $@))) -o $@
 
 $(LIBFT) : $(LIB_DEPS)
 	make -C libft
 
-.PHONY : clean fclean re
+.PHONY : clean fclean re print
+
+print :
+	@for file in $(basename $(notdir $(SRCS))); do \
+		echo $$file ; \
+	done
 
 clean :
 	rm -f libft/*\.o$
