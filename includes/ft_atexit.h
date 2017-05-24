@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/16 11:48:25 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 17:00:32 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/24 15:02:43 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # define STRING_BUFFER 5
 # define FUNCTION_BUFFER 5
+
+typedef void (*t_void_func_ptr)(void);
 
 void	ft_atexit(void);
 void	ft_str_atexit(int loading, char *str_to_free);
