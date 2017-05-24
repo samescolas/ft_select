@@ -30,11 +30,12 @@ print :
 	done
 
 clean :
-	rm -f libft/*\.o$
-	rm -f .objs/*\.o$
+	@rm -Rf $(NAME).dSYM;
+	@rm -f libft/*\.o$;
+	@rm -f .objs/*\.o$;
 
 fclean : clean
-	rm -f $(LIBFT)
-	rm -f $(NAME)
+	@rm -f $(LIBFT)
+	@rm -f $(NAME)
 
 re : fclean all
