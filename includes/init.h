@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 14:18:46 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 16:55:07 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/23 17:53:40 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 # include <curses.h>
 # include <term.h>
 
+typedef struct s_window t_window;
+
 void			reset_terminal(void);
-void			load_terminal(void);
+t_window		*load_terminal(void);
 
 #endif
