@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/05/16 11:38:18 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 17:33:53 by sescolas         ###   ########.fr       */
+/*   Created: 2017/05/23 17:37:34 by sescolas          #+#    #+#             */
+/*   Updated: 2017/05/24 15:13:28 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ static void	resize_func_arr(void (***arr)(void), int size, int buff_size)
 	void	(**ret)(void);
 	int		i;
 
-	if (!(ret = (void (**)(void))malloc((size + buff_size) * sizeof(void (*)(void)))))
+	if (!(ret =\
+	(void (**)(void))malloc((size + buff_size) * sizeof(void (*)(void)))))
 		ft_fatal("err: out of memory\n");
 	i = -1;
 	while (++i < size)
@@ -50,12 +51,11 @@ void		ft_str_atexit(int loading, char *str_to_free)
 	int			i;
 
 	i = -1;
-	if (!num_strings)
-		if (!(string_arr = (char **)malloc(STRING_BUFFER * sizeof(char *))))
-			ft_fatal("err: out of memory\n");
+	if (!num_strings &&\
+		!(string_arr = (char **)malloc((int)STRING_BUFFER * sizeof(char *))))
+		ft_fatal("err: out of memory\n");
 	if (loading)
 	{
-		write(1, "\r", 1);
 		if (num_strings > 0 && num_strings % STRING_BUFFER == 0)
 			resize_str_arr(&string_arr, num_strings, STRING_BUFFER);
 		string_arr[num_strings++] = str_to_free;
@@ -75,13 +75,14 @@ void		ft_str_atexit(int loading, char *str_to_free)
 
 void		ft_func_atexit(int loading, void (*func_to_load)(void))
 {
-	static void	(**func_arr)(void);
-	static int	num_funcs;
-	int			i;
+	static t_void_func_ptr	*func_arr;
+	static int				num_funcs;
+	int						i;
 
 	i = -1;
 	if (num_funcs == 0)
-		if (!(func_arr = (void (**)(void))malloc(FUNCTION_BUFFER * sizeof(void (*)(void)))))
+		if (!(func_arr = (t_void_func_ptr *)malloc(\
+						(int)FUNCTION_BUFFER * sizeof(t_void_func_ptr))))
 			ft_fatal("err: out of memory\n");
 	if (loading)
 	{
@@ -101,7 +102,7 @@ void		ft_func_atexit(int loading, void (*func_to_load)(void))
 	}
 }
 
-void	ft_atexit(void)
+void		ft_atexit(void)
 {
 	ft_str_atexit(0, (void *)0);
 	ft_func_atexit(0, (void *)0);
