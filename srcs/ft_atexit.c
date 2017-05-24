@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/16 11:38:18 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 17:23:18 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/23 17:33:53 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,21 @@ static void	resize_str_arr(char ***arr, int size, int buff_size)
 	int		i;
 
 	if (!(ret = (char **)malloc((size + buff_size) * sizeof(char *))))
+		ft_fatal("err: out of memory\n");
+	i = -1;
+	while (++i < size)
+		ret[size] = (*arr)[size];
+	ret[size] = (void *)0;
+	free(*arr);
+	*arr = ret;
+}
+
+static void	resize_func_arr(void (***arr)(void), int size, int buff_size)
+{
+	void	(**ret)(void);
+	int		i;
+
+	if (!(ret = (void (**)(void))malloc((size + buff_size) * sizeof(void (*)(void)))))
 		ft_fatal("err: out of memory\n");
 	i = -1;
 	while (++i < size)
@@ -58,22 +73,7 @@ void		ft_str_atexit(int loading, char *str_to_free)
 	}
 }
 
-static void	resize_func_arr(void (***arr)(void), int size, int buff_size)
-{
-	void	(**ret)(void);
-	int		i;
-
-	if (!(ret = (void (**)(void))malloc((size + buff_size) * sizeof(void (*)(void)))))
-		ft_fatal("err: out of memory\n");
-	i = -1;
-	while (++i < size)
-		ret[size] = (*arr)[size];
-	ret[size] = (void *)0;
-	free(*arr);
-	*arr = ret;
-}
-
-void		ft_func_atexit(int loading, void (*f)(void))
+void		ft_func_atexit(int loading, void (*func_to_load)(void))
 {
 	static void	(**func_arr)(void);
 	static int	num_funcs;
@@ -87,7 +87,7 @@ void		ft_func_atexit(int loading, void (*f)(void))
 	{
 		if (num_funcs > 0 && num_funcs % FUNCTION_BUFFER == 0)
 			resize_func_arr(&func_arr, num_funcs, FUNCTION_BUFFER);
-		func_arr[num_funcs++] = f;
+		func_arr[num_funcs++] = func_to_load;
 	}
 	else
 	{
