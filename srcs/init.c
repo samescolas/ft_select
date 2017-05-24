@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 13:36:26 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 18:01:31 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/24 14:33:48 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "ft_atexit.h"
 #include "ft_types.h"
 #include "../libft/libft.h"
+#include "ft_select.h"
 
 static void		reset_terminal_settings(struct termios *original_settings)
 {
@@ -48,7 +49,21 @@ void			reset_terminal(void)
 	reset_terminal_settings((void *)0);
 }
 
-t_window			*load_terminal(void)
+static void		set_globals(void)
+{
+	char	*tmp;
+
+	if ((tmp = tgetstr("pc", (void *)0)))
+		PC = tmp[0];
+	else
+		PC = 0;
+	if ((tmp = tgetstr("up", (void *)0)))
+		UP = tmp;
+	if ((tmp = tgetstr("ls", (void *)0)))
+		BC = tmp;
+}
+
+t_window		*load_terminal(int num_args)
 {
 	char	*termtype;
 	char	*buff;
@@ -64,5 +79,6 @@ t_window			*load_terminal(void)
 	ft_str_atexit(1, buff);
 	ft_func_atexit(1, &reset_terminal);
 	ft_makeraw();
-	return (ft_create_window());
+	set_globals();
+	return (ft_create_window(num_args));
 }
