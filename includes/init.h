@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 14:18:46 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 15:29:09 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/23 16:55:07 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 # include <curses.h>
 # include <term.h>
 
-void			ft_makeraw(void);
-void			reset_terminal_settings(struct termios *original_settings);
+void			reset_terminal(void);
 void			load_terminal(void);
 
 #endif

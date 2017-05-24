@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 13:36:26 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 15:32:13 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/23 17:06:13 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,18 @@
 #include "ft_atexit.h"
 #include "../libft/libft.h"
 
-void			reset_terminal_settings(struct termios *original_settings)
+static void		reset_terminal_settings(struct termios *original_settings)
 {
 	static struct termios	saved_settings;
 
 	if (original_settings)
-		ft_memcpy(&saved_settings, original_settings, sizeof(*original_settings));
+		ft_memcpy(\
+			&saved_settings, original_settings, sizeof(*original_settings));
 	else
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &saved_settings);
 }
 
-void			ft_makeraw(void)
+static void		ft_makeraw(void)
 {
 	struct termios	settings;
 
@@ -41,6 +42,11 @@ void			ft_makeraw(void)
 		ft_fatal("err: unable to enter raw mode\n");
 }
 
+void			reset_terminal(void)
+{
+	reset_terminal_settings((void *)0);
+}
+
 void			load_terminal(void)
 {
 	char	*termtype;
@@ -55,4 +61,6 @@ void			load_terminal(void)
 	if ((status = tgetent(buff, termtype)) <= 0)
 		ft_fatal("err: unable to load terminal\n");
 	ft_str_atexit(1, buff);
+	ft_func_atexit(1, &reset_terminal);
+	ft_makeraw();
 }
