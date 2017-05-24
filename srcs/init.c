@@ -6,12 +6,13 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 13:36:26 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/23 17:06:13 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/23 18:01:31 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "init.h"
 #include "ft_atexit.h"
+#include "ft_types.h"
 #include "../libft/libft.h"
 
 static void		reset_terminal_settings(struct termios *original_settings)
@@ -47,7 +48,7 @@ void			reset_terminal(void)
 	reset_terminal_settings((void *)0);
 }
 
-void			load_terminal(void)
+t_window			*load_terminal(void)
 {
 	char	*termtype;
 	char	*buff;
@@ -63,4 +64,5 @@ void			load_terminal(void)
 	ft_str_atexit(1, buff);
 	ft_func_atexit(1, &reset_terminal);
 	ft_makeraw();
+	return (ft_create_window());
 }
