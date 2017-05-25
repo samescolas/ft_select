@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 17:49:21 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/24 10:35:03 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/25 09:00:03 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ t_window	*ft_create_window(int num_args)
 	ret->term_width = get_term_width();
 	ret->term_height = get_term_height();
 	ret->border_top = 0;
+	ret->border_left = 0;
 	ret->num_cols = 1;
 	ret->num_args = num_args;
 	ret->h_padding = 0;
