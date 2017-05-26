@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/16 10:23:04 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/25 09:36:49 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/25 15:46:12 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 #include "parametrize.h"
 #include <stdio.h>
 #include "../libft/libft.h"
+#include "ft_termcap.h"
+
+void	display_choice(t_choice choice, t_coord *pos);
 
 void	print_term_contents(t_window term)
 {
@@ -42,8 +45,8 @@ void	print_list(t_choice *list)
 	while (to_do || tmp != list)
 	{
 		to_do = 0;
-		printf("label: %s\tlength: %zu\tposition: (%zu, %zu)\n\r",\
-				tmp->label, tmp->len, tmp->position->x, tmp->position->y);
+//		printf("%s (%zu, %zu)\n\r", tmp->label, tmp->position->x, tmp->position->y);
+		display_choice(*tmp, 0);
 		tmp = tmp->next;
 	}
 }
@@ -56,9 +59,11 @@ int		main(int argc, char **argv)
 	if (argc > 1)
 	{
 		term = load_terminal(argc - 1);
+		ft_clear_screen(*term);
 		test_dimensions(argv, term);
 		dimensionalize(term);
-		print_term_contents(*term);
+//		print_term_contents(*term);
+//		printf("width: %zu\theight: %zu\n\r", term->term_width, term->term_height);
 		list = parametrize_options(&argv[1], term);
 		print_list(list);
 		ft_atexit();
