@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 16:39:14 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/25 09:40:23 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/25 15:45:49 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ t_choice	*parametrize_options(char **arr, t_window *win)
 		if (args_added > 0 && (args_added + 1) % win->num_cols == 0)
 		{
 			pos->x = win->border_left + 1;
-			pos->y += (win->box_height + win->h_padding);
+			pos->y += (win->box_height + win->v_padding);
 		}
 		else
-			pos->x += (win->box_width + win->v_padding);
+			pos->x += (win->box_width + win->h_padding);
 	}
 	return (list);
 }
