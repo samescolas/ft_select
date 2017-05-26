@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 17:55:55 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/24 15:59:21 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/25 12:03:39 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ size_t	get_content_width(t_window win)
 {
 	size_t	width;
 
-	width = win.num_cols * win.box_width;
+	width = win.border_left;
+	width += (win.num_cols * win.box_width);
 	width += ((win.num_cols - 1) * win.h_padding);
 	return (width);
 }
