@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 11:53:46 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/25 09:00:58 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/25 14:31:08 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,18 @@ static void	add_horizontal_padding(t_window *win)
 	double	content_width;
 
 	pct = 0;
-	while (pct < 0.9)
+	while (pct < 0.8)
 	{
 		content_width = (double)get_content_width(*win);
 		pct = (double)(content_width / (double)win->term_width);
 		win->h_padding++;
 	}
-	win->border_left = (win->term_width - get_content_width(*win)) / 2;
+	if (!check_term_width(*win))
+		win->h_padding--;
+	if (check_term_width(*win))
+		win->border_left = (win->term_width - get_content_width(*win)) / 2;
+	else
+		ft_putendl("this is what's going wrong\r");
 }
 
 static void	add_vertical_padding(t_window *win)
@@ -67,14 +72,16 @@ static void	add_vertical_padding(t_window *win)
 	double	content_height;
 
 	pct = 0;
-	while (pct < 0.9)
+	while (pct < 0.8)
 	{
 		content_height = (double)get_content_height(*win);
 		pct = (double)(content_height / (double)win->term_height);
-		if (win->border_top++ % 10 == 0)
-			win->v_padding++;
+		win->v_padding++;
 	}
-	win->border_top /= 2;
+	if (check_term_height(*win))
+		win->border_top = (win->term_height - get_content_height(*win)) / 2;
+	else
+		ft_putendl("this is what's going wrong\r");
 }
 
 int			perfect_square(int num_args)
