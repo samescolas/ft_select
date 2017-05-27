@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 10:03:22 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/25 11:46:51 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/26 11:01:12 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 typedef struct s_coord	t_coord;
 typedef struct s_window t_window;
 
-void	ft_print_loc(char *str, t_coord *loc);
+void	ft_print_loc(char *str, t_coord *loc, void (*mode)(char *));
 void	ft_clear_screen(t_window win);
 
 #endif
