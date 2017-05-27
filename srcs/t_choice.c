@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 16:45:33 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/25 09:28:26 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/26 14:57:58 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,29 @@ void		choice_add(t_choice **list, t_choice *item)
 		item->next = (*list);
 		(*list)->prev->next = item;
 		(*list)->prev = item;
+	}
+}
+
+void		free_choice(t_choice **choice)
+{
+	uncoordinate((*choice)->position);
+	(*choice)->label = (void *)0;
+	(*choice)->next = (void *)0;
+	(*choice)->prev = (void *)0;
+	free(*choice);
+	*choice = (void *)0;
+	choice = (void *)0;
+}
+
+void		free_choices(t_choice **list)
+{
+	t_choice	**tmp;
+
+	tmp = list;
+	while (*list)
+	{
+		tmp = list;
+		*list = (*list)->next;
+		free_choice(tmp);
 	}
 }
