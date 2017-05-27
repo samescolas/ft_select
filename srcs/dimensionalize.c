@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 11:53:46 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/25 14:31:08 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/26 15:13:53 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	get_max_length(char **arr)
 	return (max);
 }
 
-void		test_dimensions(char **arg_list, t_window *win)
+static void	test_dimensions(char **arg_list, t_window *win)
 {
 	if ((win->box_width = get_max_length(arg_list)) > win->term_width)
 	{
@@ -52,18 +52,18 @@ static void	add_horizontal_padding(t_window *win)
 	double	content_width;
 
 	pct = 0;
-	while (pct < 0.8)
+	while (pct < 0.75)
 	{
 		content_width = (double)get_content_width(*win);
 		pct = (double)(content_width / (double)win->term_width);
+		if (win->num_cols == 1)
+			break ;
 		win->h_padding++;
 	}
-	if (!check_term_width(*win))
+	while (!check_term_width(*win))
 		win->h_padding--;
 	if (check_term_width(*win))
 		win->border_left = (win->term_width - get_content_width(*win)) / 2;
-	else
-		ft_putendl("this is what's going wrong\r");
 }
 
 static void	add_vertical_padding(t_window *win)
@@ -72,16 +72,18 @@ static void	add_vertical_padding(t_window *win)
 	double	content_height;
 
 	pct = 0;
-	while (pct < 0.8)
+	while (pct < 0.75 && win->v_padding < win->box_width)
 	{
 		content_height = (double)get_content_height(*win);
 		pct = (double)(content_height / (double)win->term_height);
+		if (ft_ceil(win->num_args, win->num_cols) == 1)
+			break ;
 		win->v_padding++;
 	}
+	while (!check_term_height(*win))
+		win->v_padding--;
 	if (check_term_height(*win))
 		win->border_top = (win->term_height - get_content_height(*win)) / 2;
-	else
-		ft_putendl("this is what's going wrong\r");
 }
 
 int			perfect_square(int num_args)
@@ -98,22 +100,34 @@ int			perfect_square(int num_args)
 	return (0);
 }
 
-void		dimensionalize(t_window *win)
+void		dimensionalize(char **argv, t_window *win)
 {
 	size_t	goal_seek;
+	size_t	tmp;
 
+	test_dimensions(argv, win);
 	goal_seek = 0;
-	if ((goal_seek = (size_t)perfect_square(win->num_args)))
-		win->num_cols = goal_seek;
-	else if (win->num_args > 1)
+	if ((goal_seek = (size_t)perfect_square(win->num_args)) && goal_seek > win->num_cols)
 	{
+		tmp = win->num_cols;
+		win->num_cols = goal_seek;
+	}
+	if ((!check_term_width(*win) || !check_term_height(*win)) && win->num_args > 1)
+	{
+		win->num_cols = tmp;
 		goal_seek = 2;
 		while (goal_seek < win->num_args && win->num_args % goal_seek)
+		{
+			tmp = win->num_cols;
+			win->num_cols = goal_seek;
+			if (!check_term_width(*win) || !check_term_height(*win))
+			{
+				win->num_cols = tmp;
+				break ;
+			}
 			++goal_seek;
+		}
 	}
-	if (goal_seek > 0 && win->num_args % goal_seek == 0)
-		win->num_cols = goal_seek;
 	add_vertical_padding(win);
-	if (win->num_args > 1)
-		add_horizontal_padding(win);
+	add_horizontal_padding(win);
 }
