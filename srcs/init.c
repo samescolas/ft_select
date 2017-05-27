@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 13:36:26 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/24 15:24:36 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/26 11:40:09 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ t_window		*load_terminal(int num_args)
 	char	*buff;
 	int		status;
 
+	if (num_args <= 0)
+		ft_fatal("err: please include menu options\n");
 	termtype = (void *)0;
 	if (!(buff = (char *)malloc(2048 * sizeof(char))))
 		ft_fatal("err: out of memory\n");
