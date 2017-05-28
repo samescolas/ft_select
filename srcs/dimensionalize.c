@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 11:53:46 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 15:13:53 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 17:35:38 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	get_max_length(char **arr)
 	while (arr[++i])
 		if ((len = ft_strlen(arr[i])) > max)
 			max = len;
-	return (max);
+	return (max % 2 == 0 ? max + 1 : max);
 }
 
 static void	test_dimensions(char **arg_list, t_window *win)
@@ -86,48 +86,29 @@ static void	add_vertical_padding(t_window *win)
 		win->border_top = (win->term_height - get_content_height(*win)) / 2;
 }
 
-int			perfect_square(int num_args)
-{
-	int		n;
-
-	n = 4;
-	while (n < num_args)
-	{
-		if (num_args % n == 0)
-			return (n);
-		n *= 2;
-	}
-	return (0);
-}
-
-void		dimensionalize(char **argv, t_window *win)
+void		dimensionalize(char **argv, t_window *win, int num_cols)
 {
 	size_t	goal_seek;
 	size_t	tmp;
 
 	test_dimensions(argv, win);
-	goal_seek = 0;
-	if ((goal_seek = (size_t)perfect_square(win->num_args)) && goal_seek > win->num_cols)
+	goal_seek = 1;
+	while (goal_seek < win->num_args && win->num_args % goal_seek)
 	{
 		tmp = win->num_cols;
 		win->num_cols = goal_seek;
-	}
-	if ((!check_term_width(*win) || !check_term_height(*win)) && win->num_args > 1)
-	{
-		win->num_cols = tmp;
-		goal_seek = 2;
-		while (goal_seek < win->num_args && win->num_args % goal_seek)
+		if (!check_term_width(*win) || !check_term_height(*win))
 		{
-			tmp = win->num_cols;
-			win->num_cols = goal_seek;
-			if (!check_term_width(*win) || !check_term_height(*win))
-			{
-				win->num_cols = tmp;
-				break ;
-			}
-			++goal_seek;
+			win->num_cols = tmp;
+			break ;
 		}
+		++goal_seek;
 	}
-	add_vertical_padding(win);
-	add_horizontal_padding(win);
+	if (num_cols)
+		win->num_cols = num_cols;
+	else
+	{
+		add_vertical_padding(win);
+		add_horizontal_padding(win);
+	}
 }

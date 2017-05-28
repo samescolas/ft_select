@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 13:36:26 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 11:40:09 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 18:08:53 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "ft_types.h"
 #include "../libft/libft.h"
 #include "ft_select.h"
+#include "ft_termcap.h"
 
 static void		reset_terminal_settings(struct termios *original_settings)
 {
@@ -24,7 +25,7 @@ static void		reset_terminal_settings(struct termios *original_settings)
 		ft_memcpy(\
 			&saved_settings, original_settings, sizeof(*original_settings));
 	else
-		tcsetattr(STDIN_FILENO, TCSAFLUSH, &saved_settings);
+		tcsetattr(STDIN_FILENO, 0, &saved_settings);
 }
 
 static void		ft_makeraw(void)
@@ -37,7 +38,7 @@ static void		ft_makeraw(void)
 	reset_terminal_settings(&settings);
 	settings.c_iflag &= ~(ICRNL | IXON);
 	settings.c_oflag &= ~(OPOST);
-	settings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+	settings.c_lflag &= ~(ECHO | ICANON | IEXTEN );
 	settings.c_cc[VMIN] = 0;
 	settings.c_cc[VTIME] = 1;
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &settings) == -1)
@@ -63,11 +64,12 @@ static void		set_globals(void)
 		BC = tmp;
 }
 
-t_window		*load_terminal(int num_args)
+t_window		*load_terminal(int num_args, char **args)
 {
-	char	*termtype;
-	char	*buff;
-	int		status;
+	char		*termtype;
+	char		*buff;
+	int			status;
+	t_window	*win;
 
 	if (num_args <= 0)
 		ft_fatal("err: please include menu options\n");
@@ -80,7 +82,9 @@ t_window		*load_terminal(int num_args)
 		ft_fatal("err: unable to load terminal\n");
 	ft_str_atexit(1, buff);
 	ft_func_atexit(1, &reset_terminal);
+	ft_func_atexit(1, &ft_show_cursor);
 	ft_makeraw();
 	set_globals();
-	return (ft_create_window(num_args));
+	dimensionalize(args, (win = ft_create_window(num_args)), 0);
+	return (win);
 }

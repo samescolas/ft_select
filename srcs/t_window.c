@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 17:49:21 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 15:16:31 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 11:52:47 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,10 @@ void		reset_window(t_window *win)
 	win->border_left = 0;
 	win->term_width = get_term_width();
 	win->term_height = get_term_height();
+}
+
+void		free_window(t_window *win)
+{
+	free(win);
+	win = (void *)0;
 }

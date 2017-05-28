@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/25 09:43:54 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 11:23:19 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 17:46:19 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,46 +15,62 @@
 #include "ft_select.h"
 #include "../libft/libft.h"
 
-void	selected_mode(char *option)
+void	selected_mode(char *option, char *color)
 {
-	tputs(MR, 1, ft_putchar);
-	tputs(option, 1, ft_putchar);
-	tputs(ME, 1, ft_putchar);
+	tputs(MR, 1, ft_putc);
+	if (color)
+		tputs(color, 1, ft_putc);
+	tputs(option, 1, ft_putc);
+	if (color)
+		tputs(DEF, 1, ft_putc);
+	tputs(ME, 1, ft_putc);
 }
 
-void	active_mode(char *option)
+void	active_mode(char *option, char *color)
 {
-	tputs(US, 1, ft_putchar);
-	tputs(option, 1, ft_putchar);
-	tputs(UE, 1, ft_putchar);
+	tputs(US, 1, ft_putc);
+	if (color)
+		tputs(color, 1, ft_putc);
+	tputs(option, 1, ft_putc);
+	if (color)
+		tputs(DEF,1, ft_putc);
+	tputs(UE, 1, ft_putc);
 }
 
-void	active_and_selected_mode(char *option)
+void	active_and_selected_mode(char *option, char *color)
 {
-	tputs(SO, 1, ft_putchar);
-	tputs(US, 1, ft_putchar);
-	tputs(option, 1, ft_putchar);
-	tputs(UE, 1, ft_putchar);
-	tputs(SE, 1, ft_putchar);
+	tputs(SO, 1, ft_putc);
+	tputs(US, 1, ft_putc);
+	if (color)
+		tputs(color, 1, ft_putc);
+	tputs(option, 1, ft_putc);
+	if (color)
+		tputs(DEF, 1, ft_putc);
+	tputs(UE, 1, ft_putc);
+	tputs(SE, 1, ft_putc);
 }
 
-void	standout_mode(char *option)
+void	standout_mode(char *option, char *color)
 {
-	tputs(SO, 1, ft_putchar);
-	tputs(option, 1, ft_putchar);
-	tputs(SE, 1, ft_putchar);
+	tputs(SO, 1, ft_putc);
+	if (color)
+		tputs(color, 1, ft_putc);
+	tputs(option, 1, ft_putc);
+	if (color)
+		tputs(DEF, 1, ft_putc);
+	tputs(SE, 1, ft_putc);
 }
 
 void	display_choice(t_choice choice, int active)
 {
-	void	(*print_mode)(char *);
-
-	print_mode = (void *)0;
+	tputs(tgoto(CM, choice.position->x, choice.position->y), 1, ft_putc);
 	if (active && choice.selected)
-		print_mode = &active_and_selected_mode;
+		active_and_selected_mode(choice.label, "\x1B[38;5;99m");
 	else if (active)
-		print_mode = &active_mode;
+		active_mode(choice.label, "\x1B[38;5;97m");
 	else if (choice.selected)
-		print_mode = &selected_mode;
-	ft_print_loc(choice.label, choice.position, print_mode);
+		selected_mode(choice.label, "\x1B[38;5;90m");
+	else
+		tputs(choice.label, 1, ft_putc);
+	ft_hide_cursor();
 }

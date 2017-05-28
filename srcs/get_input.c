@@ -6,122 +6,122 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/12 19:39:12 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 16:16:58 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 18:03:23 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
 #include "ft_types.h"
 #include "ft_display.h"
+#include "ft_termcap.h"
+#include "ft_atexit.h"
 
-/*
-static void		resize_buffer(char **line, unsigned int current_size)
+static void	handle_arrowkeys(char c, t_window *win, t_choice **list)
 {
-	char	*tmp;
+	size_t	i;
 
-	tmp = ft_strnew(current_size + BUFF_SIZE);
-	ft_strncpy(tmp, *line, current_size);
-	ft_strdel(line);
-	*line = tmp;
+	i = win->num_cols;
+	if (c == 'A' || c == 'k')
+		while (i--)
+			*list = (*list)->prev;
+	else if (c == 'B' || c == 'j')
+		while (i--)
+			*list = (*list)->next;
+	else if (c == 'C' || c == 'l')
+		*list = (*list)->next;
+	else if (c == 'D' || c == 'h')
+		*list = (*list)->prev;
+	print_list(*list);
 }
 
-static void		key_printable(char c, char *line, unsigned int *chars_copied)
+static void	handle_backspace(t_window *win, t_choice ***list, char **args)
 {
-	char	bkspc[3];
-
-	if (c == 127)
+	if (**list == (**list)->next)
 	{
-		if (*chars_copied == 0)
-			return ;
-		bkspc[0] = 8;
-		bkspc[1] = 127;
-		bkspc[2] = 8;
-		line[--(*chars_copied)] = '\0';
-		write(1, bkspc, 3);
-		return ;
+		remove_choice(*list);
+		ft_atexit();
 	}
-	if (*chars_copied == 0 && c == ';')
-		return ;
-	write(1, &c, 1);
-	line[(*chars_copied)++] = c;
+	else
+	{
+		win->num_args--;
+		remove_choice(*list);
+		redisplay(list, win, args, 1);
+	}
 }
-*/
 
-void		handle_ctrl(char c, t_window *win, t_choice **list)
+static void	handle_escape(t_window *win, t_choice ***list, char **args)
 {
 	int		ret;
+	char	c;
 
-	if ((ret = read(STDIN_FILENO, &c, 1)) > 0)
+	if ((ret = read(STDIN_FILENO, &c, 1)) > 0 && c == '[')
 	{
-		if (!c)
-			ft_fatal("esc pressed\n\r");
-		else if (c == 'A')
+		if ((ret = read(STDIN_FILENO, &c, 1)) > 0)
 		{
-			/* up */
-			ret = -1;
-			while (++ret < (int)win->num_cols)
-				*list = (*list)->prev;
-			print_list(*list);
+			if (c >= 'A' && c <= 'D')
+				handle_arrowkeys(c, win, *list);
+			else if (c == '3')
+				handle_backspace(win, list, args);
+			else
+				write(1, &c, 1);
 		}
-		else if (c == 'B')
-		{
-			/* down */
-			ret = -1;
-			while (++ret < (int)win->num_cols)
-				*list = (*list)->next;
-			print_list(*list);
-		}
-		else if (c == 'C')
-		{
-			/* right */
-			*list = (*list)->next;
-			print_list(*list);
-		}
-		else if (c == 'D')
-		{
-			/* left */
-			*list = (*list)->prev;
-			print_list(*list);
-		}
+	}
+	else
+	{
+		free_choices(*list);
+		free_window(win);
+		ft_atexit();
 	}
 }
 
-void		handle_keypress(char c, t_window *win, t_choice **list)
+static void	return_selected(t_choice *list)
 {
-	if (c == ' ')
+	t_choice	*start;
+	size_t		first;
+
+	start = list;
+	first = 1;
+	list = list->next;
+	if (start->selected)
 	{
-		(*list)->selected = !((*list)->selected);
-		print_list(*list);
+		ft_putstr(start->label);
+		first = 0;
 	}
-	else if (c == 'h' || c == 'i' || c == 'j' || c == 'k')
+	while (list != start)
 	{
-		ft_putchar_fd(c, STDIN_FILENO);
-		handle_ctrl(c, win, list);
+		if (list->selected)
+		{
+			if (!first)
+				write(1, " ", 1);
+			ft_putstr(list->label);
+			first = 0;
+		}
+		list = list->next;
 	}
+}
+
+void	handle_keypress(char c, t_window *win, t_choice ***list, char **args)
+{
+	if (c == 27)
+		handle_escape(win, list, args);
+	else if (c == ' ')
+	{
+		(**list)->selected = !((**list)->selected);
+		(**list) = (**list)->next;
+		print_list(**list);
+	}
+	else if (c == 'h' || c == 'j' || c == 'k' || c == 'l')
+		handle_arrowkeys(c, win, *list);
 	else if (c == 127)
+		handle_backspace(win, list, args);
+	else if (c == 13)
 	{
-		ft_fatal("backspace pressed!\n\r");
+		ft_clear_screen();
+		return_selected(**list);
+		free_choices(*list);
+		free_window(win);
+		ft_atexit();
 	}
+	else if (c == 'q')
+		ft_atexit();
 }
-
-
-/*
-void			read_line(t_window *win, t_choice **list)
-{
-	char			buf;
-	int				ret;
-	unsigned int	chars_copied;
-
-	chars_copied = 0;
-	if (!win || !list)
-		return ;
-	while (1 (ret = read(STDIN_FILENO, &buf, 1)) > 0 && buf != '\n')
-	{
-		if ((ret = read(STDIN_FILENO, &buf, 1)) > 0 && buf == 27)
-		{
-			if ((ret = read(STDIN_FILENO, &buf, 1)) > 0 && buf == '[')
-				handle_ctrl(buf, win, list);
-		}
-	}
-}
-*/

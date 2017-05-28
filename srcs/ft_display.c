@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/26 11:30:52 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 16:54:42 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 18:03:00 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,14 @@
 #include "ft_display.h"
 #include "ft_terminfo.h"
 #include "parametrize.h"
-#include "dimensionalize.h"
 #include "ft_termcap.h"
 #include "../libft/libft.h"
+#include "init.h"
 
-void		handle_ctrl(char c, t_window *win, t_choice **list);
-void		handle_keypress(char c, t_window *win, t_choice **list);
+void		handle_keypress(char c, t_window *win, t_choice ***list, char **args);
 t_choice	**reassign_coordinates(t_choice ***list, char **arr, t_window *win);
 
-void		print_list(t_choice *list)
+void	print_list(t_choice *list)
 {
 	t_choice	*tmp;
 
@@ -36,33 +35,31 @@ void		print_list(t_choice *list)
 	display_choice(*tmp, tmp == list);
 }
 
-static void	redisplay_menu(t_choice ***list, t_window *win, char **args)
+void	redisplay(t_choice ***list, t_window *win, char **args, int preserve)
 {
+	int		num_cols;
 
-	reset_window(win);
-	dimensionalize(args, win);
+	num_cols = (preserve ? win->num_cols : 0);
+	if (!preserve)
+		reset_window(win);
+	dimensionalize(args, win, num_cols);
 	*list = reassign_coordinates(list, args, win);
-	//list = parametrize_options(args, win);
-	ft_clear_screen(*win);
+	ft_clear_screen();
 	print_list(**list);
 }
 
-void		launch_menu(t_choice **list, t_window *win, char **args)
+void	launch_menu(t_choice **list, t_window *win, char **args)
 {
 	int		ret;
 	char	c;
 
+	ft_clear_screen();
 	print_list(*list);
 	while (1)
 	{
 		if (screen_size_changed(win))
-			redisplay_menu(&list, win, args);
+			redisplay(&list, win, args, 0);
 		if ((ret = read(STDIN_FILENO, &c, 1)) > 0)
-		{
-			if (c == 27 && (ret = read(STDIN_FILENO, &c, 1)) > 0  && c == '[')
-				handle_ctrl(c, win, list);
-			else
-				handle_keypress(c, win, list);
-		}
+			handle_keypress(c, win, &list, args);
 	}
 }

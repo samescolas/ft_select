@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 16:45:33 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 14:57:58 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 17:15:56 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,26 +45,44 @@ void		choice_add(t_choice **list, t_choice *item)
 	}
 }
 
-void		free_choice(t_choice **choice)
+void		free_choice(t_choice *choice)
 {
-	uncoordinate((*choice)->position);
-	(*choice)->label = (void *)0;
-	(*choice)->next = (void *)0;
-	(*choice)->prev = (void *)0;
-	free(*choice);
-	*choice = (void *)0;
+	uncoordinate(choice->position);
+	(choice)->label = (void *)0;
+	(choice)->next = (void *)0;
+	(choice)->prev = (void *)0;
+	free(choice);
 	choice = (void *)0;
 }
 
 void		free_choices(t_choice **list)
 {
-	t_choice	**tmp;
+	t_choice	*tmp;
 
-	tmp = list;
+	tmp = *list;
 	while (*list)
 	{
-		tmp = list;
-		*list = (*list)->next;
-		free_choice(tmp);
+		if (*list == (*list)->next)
+			break ;
+		tmp = (*list)->next;
+		remove_choice(list);
+		*list = tmp;
 	}
+	remove_choice(list);
+}
+
+void		remove_choice(t_choice **list)
+{
+	t_choice	*tmp;
+
+	if (*list == (*list)->next)
+	{
+		free_choice(*list);
+		return ;
+	}
+	tmp = *list;
+	(*list)->next->prev = (*list)->prev;
+	(*list)->prev->next = (*list)->next;
+	*list = (*list)->next;
+	free_choice(tmp);
 }

@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 17:46:26 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 15:15:54 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/27 11:52:23 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,10 @@ t_choice	*create_choice(char *label, t_coord *position);
 t_coord		*create_coord(size_t x, size_t y);
 void		choice_add(t_choice **list, t_choice *item);
 void		reset_window(t_window *win);
+void		free_window(t_window *win);
 
 void		uncoordinate(t_coord *coord);
 void		free_choices(t_choice **list);
+void		remove_choice(t_choice **list);
 
 #endif
