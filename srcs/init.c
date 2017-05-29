@@ -6,16 +6,17 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 13:36:26 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/27 18:08:53 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/29 11:01:31 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "init.h"
 #include "ft_atexit.h"
 #include "ft_types.h"
-#include "../libft/libft.h"
-#include "ft_select.h"
+#include "ft_signal.h"
 #include "ft_termcap.h"
+#include "ft_terminfo.h"
+#include "../libft/libft.h"
 
 static void		reset_terminal_settings(struct termios *original_settings)
 {
@@ -28,7 +29,7 @@ static void		reset_terminal_settings(struct termios *original_settings)
 		tcsetattr(STDIN_FILENO, 0, &saved_settings);
 }
 
-static void		ft_makeraw(void)
+void			ft_makeraw(void)
 {
 	struct termios	settings;
 
@@ -38,7 +39,7 @@ static void		ft_makeraw(void)
 	reset_terminal_settings(&settings);
 	settings.c_iflag &= ~(ICRNL | IXON);
 	settings.c_oflag &= ~(OPOST);
-	settings.c_lflag &= ~(ECHO | ICANON | IEXTEN );
+	settings.c_lflag &= ~(ECHO | ICANON | IEXTEN);
 	settings.c_cc[VMIN] = 0;
 	settings.c_cc[VTIME] = 1;
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &settings) == -1)
@@ -50,20 +51,6 @@ void			reset_terminal(void)
 	reset_terminal_settings((void *)0);
 }
 
-static void		set_globals(void)
-{
-	char	*tmp;
-
-	if ((tmp = tgetstr("pc", (void *)0)))
-		PC = tmp[0];
-	else
-		PC = 0;
-	if ((tmp = tgetstr("up", (void *)0)))
-		UP = tmp;
-	if ((tmp = tgetstr("ls", (void *)0)))
-		BC = tmp;
-}
-
 t_window		*load_terminal(int num_args, char **args)
 {
 	char		*termtype;
@@ -71,7 +58,8 @@ t_window		*load_terminal(int num_args, char **args)
 	int			status;
 	t_window	*win;
 
-	if (num_args <= 0)
+	win = (void *)0;
+	if (num_args <= 0 && num_args != -1742)
 		ft_fatal("err: please include menu options\n");
 	termtype = (void *)0;
 	if (!(buff = (char *)malloc(2048 * sizeof(char))))
@@ -80,11 +68,14 @@ t_window		*load_terminal(int num_args, char **args)
 		ft_fatal("err: terminal type unavailable\n");
 	if ((status = tgetent(buff, termtype)) <= 0)
 		ft_fatal("err: unable to load terminal\n");
+	ft_makeraw();
+	if (num_args == -1742)
+		return ((void *)0);
 	ft_str_atexit(1, buff);
 	ft_func_atexit(1, &reset_terminal);
+	ft_func_atexit(1, &reset_signals);
 	ft_func_atexit(1, &ft_show_cursor);
-	ft_makeraw();
-	set_globals();
+	ft_func_atexit(1, &ft_clear_screen);
 	dimensionalize(args, (win = ft_create_window(num_args)), 0);
 	return (win);
 }

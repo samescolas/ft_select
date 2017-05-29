@@ -6,14 +6,13 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 17:55:55 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/26 15:28:57 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/28 12:31:22 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/libft.h"
-#include "ft_select.h"
 #include "ft_types.h"
 #include "ft_terminfo.h"
+#include "../libft/libft.h"
 
 size_t	get_content_height(t_window win)
 {

@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 11:53:46 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/27 17:35:38 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/29 10:49:56 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	test_dimensions(char **arg_list, t_window *win)
 	{
 		win->box_height = ft_ceil(win->box_width, win->term_width);
 		if (win->box_height * win->num_args > win->term_height)
-			ft_fatal("err: terminal window too small\n\r");
+			wait_for_larger_window(arg_list, win);
 	}
 	else
 	{
@@ -42,7 +42,7 @@ static void	test_dimensions(char **arg_list, t_window *win)
 		while (check_term_width(*win) && !check_term_height(*win))
 			++(win->num_cols);
 		if (!check_term_width(*win) || !check_term_height(*win))
-			ft_fatal("err: terminal window too small\n\r");
+			wait_for_larger_window(arg_list, win);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 10:03:22 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/27 17:44:29 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/28 14:51:32 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 # define VB tgetstr("vb", (void *)0)
 
 typedef struct s_coord	t_coord;
-typedef struct s_window t_window;
+typedef struct s_window	t_window;
 
 void	ft_clear_screen(void);
 void	ft_show_cursor(void);

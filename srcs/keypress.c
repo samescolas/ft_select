@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_input.c                                        :+:      :+:    :+:   */
+/*   keypress.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sescolas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/12 19:39:12 by sescolas          #+#    #+#             */
-/*   Updated: 2017/05/27 18:03:23 by sescolas         ###   ########.fr       */
+/*   Updated: 2017/05/28 14:34:32 by sescolas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/libft.h"
 #include "ft_types.h"
 #include "ft_display.h"
 #include "ft_termcap.h"
 #include "ft_atexit.h"
+#include "../libft/libft.h"
 
 static void	handle_arrowkeys(char c, t_window *win, t_choice **list)
 {
@@ -74,7 +74,7 @@ static void	handle_escape(t_window *win, t_choice ***list, char **args)
 	}
 }
 
-static void	return_selected(t_choice *list)
+static void	return_to_shell(t_choice *list)
 {
 	t_choice	*start;
 	size_t		first;
@@ -100,7 +100,7 @@ static void	return_selected(t_choice *list)
 	}
 }
 
-void	handle_keypress(char c, t_window *win, t_choice ***list, char **args)
+void		ft_keypress(char c, t_window *win, t_choice ***list, char **args)
 {
 	if (c == 27)
 		handle_escape(win, list, args);
@@ -117,7 +117,7 @@ void	handle_keypress(char c, t_window *win, t_choice ***list, char **args)
 	else if (c == 13)
 	{
 		ft_clear_screen();
-		return_selected(**list);
+		return_to_shell(**list);
 		free_choices(*list);
 		free_window(win);
 		ft_atexit();
