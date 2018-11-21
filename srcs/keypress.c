@@ -107,7 +107,6 @@ void		ft_keypress(char c, t_window *win, t_choice ***list, char **args)
 	else if (c == ' ')
 	{
 		(**list)->selected = !((**list)->selected);
-		(**list) = (**list)->next;
 		print_list(**list);
 	}
 	else if (c == 'h' || c == 'j' || c == 'k' || c == 'l')
